@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:icon="@drawable/outline_edgesensor_high_black_24"
+        android:title="Accelerometer" />
 
     <item
         android:id="@+id/navigation_dashboard"
