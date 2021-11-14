@@ -1,4 +1,4 @@
-package fr.esgi.sensorsfyc.ui.home
+package fr.esgi.sensorsfyc.ui.accelerometer
 
 import android.content.Context
 import android.hardware.Sensor
@@ -17,9 +17,9 @@ import fr.esgi.sensorsfyc.R
 import fr.esgi.sensorsfyc.databinding.FragmentHomeBinding
 import kotlin.math.abs
 
-class HomeFragment : Fragment(), SensorEventListener {
+class AccelerometerFragment : Fragment(), SensorEventListener {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var accelerometerViewModel: AccelerometerViewModel
     private var _binding: FragmentHomeBinding? = null
 
     private val lastX = 0f
@@ -58,8 +58,8 @@ class HomeFragment : Fragment(), SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        accelerometerViewModel =
+            ViewModelProvider(this).get(AccelerometerViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         initializeViews()

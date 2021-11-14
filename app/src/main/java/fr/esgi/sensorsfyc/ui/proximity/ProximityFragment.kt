@@ -1,4 +1,4 @@
-package fr.esgi.sensorsfyc.ui.dashboard
+package fr.esgi.sensorsfyc.ui.proximity
 
 import android.content.Context
 import android.graphics.Color
@@ -16,9 +16,9 @@ import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
 import fr.esgi.sensorsfyc.databinding.FragmentDashboardBinding
 
-class DashboardFragment : Fragment(), SensorEventListener {
+class ProximityFragment : Fragment(), SensorEventListener {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var proximityViewModel: ProximityViewModel
 
     private var _binding: FragmentDashboardBinding? = null
     private var sensorManager: SensorManager? = null
@@ -37,8 +37,8 @@ class DashboardFragment : Fragment(), SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        proximityViewModel =
+            ViewModelProvider(this).get(ProximityViewModel::class.java)
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         initializeViews()
