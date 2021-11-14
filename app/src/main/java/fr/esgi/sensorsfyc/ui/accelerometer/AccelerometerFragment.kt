@@ -14,13 +14,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
-import fr.esgi.sensorsfyc.databinding.FragmentHomeBinding
+import fr.esgi.sensorsfyc.databinding.FragmentAccelerometerBinding
 import kotlin.math.abs
 
 class AccelerometerFragment : Fragment(), SensorEventListener {
 
     private lateinit var accelerometerViewModel: AccelerometerViewModel
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentAccelerometerBinding? = null
 
     private val lastX = 0f
     private var lastY = 0f
@@ -61,7 +61,7 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         accelerometerViewModel =
             ViewModelProvider(this).get(AccelerometerViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentAccelerometerBinding.inflate(inflater, container, false)
         initializeViews()
 
         sensorManager = this.activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager

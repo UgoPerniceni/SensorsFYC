@@ -14,13 +14,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
-import fr.esgi.sensorsfyc.databinding.FragmentDashboardBinding
+import fr.esgi.sensorsfyc.databinding.FragmentProximityBinding
 
 class ProximityFragment : Fragment(), SensorEventListener {
 
     private lateinit var proximityViewModel: ProximityViewModel
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentProximityBinding? = null
     private var sensorManager: SensorManager? = null
     var v: Vibrator? = null
 
@@ -40,7 +40,7 @@ class ProximityFragment : Fragment(), SensorEventListener {
         proximityViewModel =
             ViewModelProvider(this).get(ProximityViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentProximityBinding.inflate(inflater, container, false)
         initializeViews()
 
         sensorManager = this.activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
