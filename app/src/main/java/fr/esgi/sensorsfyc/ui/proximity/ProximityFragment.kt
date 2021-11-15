@@ -44,7 +44,6 @@ class ProximityFragment : Fragment(), SensorEventListener {
         initializeViews()
 
         sensorManager = this.activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         sensorManager?.let { sensorManager ->
             if(sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
                 proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
