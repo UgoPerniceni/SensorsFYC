@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="fr.esgi.sensorsfyc.ui.accelerometer.AccelerometerFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_accelerometer"
         tools:layout="@layout/fragment_accelerometer" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="fr.esgi.sensorsfyc.ui.proximity.ProximityFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_proximity"
         tools:layout="@layout/fragment_proximity" />
 
     <fragment
