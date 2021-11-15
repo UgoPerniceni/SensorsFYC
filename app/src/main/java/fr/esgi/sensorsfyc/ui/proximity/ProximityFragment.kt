@@ -11,6 +11,7 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
@@ -27,6 +28,7 @@ class ProximityFragment : Fragment(), SensorEventListener {
     private var proximity: Sensor? = null
 
     private var fontColor: View? = null
+    private var value: TextView? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -64,9 +66,13 @@ class ProximityFragment : Fragment(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         val distance = event.values[0]
+        val rangeMax = proximity!!.maximumRange
+
         println(distance)
 
-        if(distance < proximity!!.maximumRange) {
+        value?.text = "Distance: ${distance} | Range maximum: ${rangeMax}"
+
+        if(distance < rangeMax) {
             // is close
             fontColor?.setBackgroundColor(Color.RED)
         } else {
@@ -93,5 +99,6 @@ class ProximityFragment : Fragment(), SensorEventListener {
 
     private fun initializeViews() {
         fontColor = _binding?.root?.findViewById(R.id.font_color) as View
+        value = _binding?.root?.findViewById(R.id.proximity_value) as TextView
     }
 }

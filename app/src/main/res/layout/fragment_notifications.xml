@@ -5,11 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <ImageView
         android:id="@+id/compass_image"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/compass_picture"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
