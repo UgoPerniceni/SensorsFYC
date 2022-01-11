@@ -3,29 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_accelerometer">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_accelerometer"
         android:name="fr.esgi.sensorsfyc.ui.accelerometer.AccelerometerFragment"
         android:label="@string/title_accelerometer"
         tools:layout="@layout/fragment_accelerometer" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_proximity"
         android:name="fr.esgi.sensorsfyc.ui.proximity.ProximityFragment"
         android:label="@string/title_proximity"
         tools:layout="@layout/fragment_proximity" />
-
-    <fragment
-        android:id="@+id/navigation_compass"
-        android:name="fr.esgi.sensorsfyc.ui.compass.CompassFragment"
-        android:label="@string/title_compass"
-        tools:layout="@layout/fragment_compass" />
 
     <fragment
         android:id="@+id/navigation_luminosity"
         android:name="fr.esgi.sensorsfyc.ui.luminosity.LuminosityFragment"
         android:label="@string/title_luminosity"
         tools:layout="@layout/fragment_luminosity" />
+
+    <fragment
+        android:id="@+id/navigation_temperature"
+        android:name="fr.esgi.sensorsfyc.ui.temperature.TemperatureFragment"
+        android:label="@string/title_thermostat"
+        tools:layout="@layout/fragment_temperature" />
+
+    <fragment
+        android:id="@+id/navigation_compass"
+        android:name="fr.esgi.sensorsfyc.ui.compass.CompassFragment"
+        android:label="@string/title_compass"
+        tools:layout="@layout/fragment_compass" />
 </navigation>

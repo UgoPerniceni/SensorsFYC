@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_accelerometer"
         android:icon="@drawable/outline_edgesensor_high_black_24"
         android:title="@string/title_accelerometer" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_proximity"
         android:icon="@drawable/baseline_sensors_black_24dp"
         android:title="@string/title_proximity" />
 
@@ -17,6 +17,7 @@
         android:title="@string/title_luminosity" />
 
     <item
+        android:id="@+id/navigation_temperature"
         android:icon="@drawable/baseline_device_thermostat_black_48"
         android:title="@string/title_thermostat" />
 
