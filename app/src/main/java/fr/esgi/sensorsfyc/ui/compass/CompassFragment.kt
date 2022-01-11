@@ -1,4 +1,4 @@
-package fr.esgi.sensorsfyc.ui.notifications
+package fr.esgi.sensorsfyc.ui.compass
 
 import android.content.Context
 import android.hardware.Sensor
@@ -6,23 +6,20 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
-import fr.esgi.sensorsfyc.databinding.FragmentNotificationsBinding
+import fr.esgi.sensorsfyc.databinding.FragmentCompassBinding
 
-class NotificationsFragment : Fragment(), SensorEventListener {
+class CompassFragment : Fragment(), SensorEventListener {
 
-    private lateinit var notificationsViewModel: NotificationsViewModel
-    private var _binding: FragmentNotificationsBinding? = null
+    private lateinit var compassViewModel: CompassViewModel
+    private var _binding: FragmentCompassBinding? = null
 
     private var sensorManager: SensorManager? = null
 
@@ -50,10 +47,10 @@ class NotificationsFragment : Fragment(), SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        compassViewModel =
+            ViewModelProvider(this).get(CompassViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentCompassBinding.inflate(inflater, container, false)
 
         initializeViews()
 

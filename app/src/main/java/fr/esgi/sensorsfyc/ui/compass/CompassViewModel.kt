@@ -1,10 +1,10 @@
-package fr.esgi.sensorsfyc.ui.notifications
+package fr.esgi.sensorsfyc.ui.compass
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class CompassViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is notifications Fragment"

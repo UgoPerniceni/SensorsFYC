@@ -2,6 +2,7 @@
     <string name="app_name">SensorsFYC</string>
     <string name="title_accelerometer">Accelerometer</string>
     <string name="title_proximity">Proximity</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_compass">Compass</string>
     <string name="title_luminosity">Luminosity</string>
+    <string name="title_thermostat">Thermostat</string>
 </resources>

@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_proximity" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="fr.esgi.sensorsfyc.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_compass"
+        android:name="fr.esgi.sensorsfyc.ui.compass.CompassFragment"
+        android:label="@string/title_compass"
+        tools:layout="@layout/fragment_compass" />
 
     <fragment
         android:id="@+id/navigation_luminosity"
