@@ -22,4 +22,10 @@
         android:name="fr.esgi.sensorsfyc.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_luminosity"
+        android:name="fr.esgi.sensorsfyc.ui.luminosity.LuminosityFragment"
+        android:label="@string/title_luminosity"
+        tools:layout="@layout/fragment_luminosity" />
 </navigation>

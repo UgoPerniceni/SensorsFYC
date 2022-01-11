@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
@@ -67,13 +68,14 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         sensorManager = this.activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         sensorManager?.let { sensorManager ->
-            if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            // use TYPE_ACCELERATION for acceleration with gravity
+            if(sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
                 // success! we have an accelerometer
-                accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+                accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
                 sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
                 accelerometer?.let { accelerometer -> vibrateThreshold = accelerometer.maximumRange / 2 }
             } else {
-                // Accelerometer error
+                Toast.makeText(context, "ACCELEROMETER SENSOR NOT AVAILABLE", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -112,9 +114,6 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        // clean current values
-
-
         // clean current values
         displayCleanValues()
         // display the current x,y,z accelerometer values
@@ -155,6 +154,7 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
     private fun displayCurrentValues() {
         currentX?.text = deltaX.toString()
         currentY?.text = deltaY.toString()
+        // https://stackoverflow.com/questions/27134676/accelerometer-data-z-axis-gives-wrong-data
         currentZ?.text = deltaZ.toString()
     }
 

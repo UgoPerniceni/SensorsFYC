@@ -1,7 +1,6 @@
-package fr.esgi.sensorsfyc.ui.proximity
+package fr.esgi.sensorsfyc.ui.luminosity
 
 import android.content.Context
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -16,19 +15,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
-import fr.esgi.sensorsfyc.databinding.FragmentProximityBinding
+import fr.esgi.sensorsfyc.databinding.FragmentLuminosityBinding
+import kotlin.time.Duration
 
-class ProximityFragment : Fragment(), SensorEventListener {
+class LuminosityFragment : Fragment(), SensorEventListener {
 
-    private lateinit var proximityViewModel: ProximityViewModel
+    private lateinit var luminosityViewModel: LuminosityViewModel
 
-    private var _binding: FragmentProximityBinding? = null
+    private var _binding: FragmentLuminosityBinding? = null
     private var sensorManager: SensorManager? = null
     var v: Vibrator? = null
 
-    private var proximity: Sensor? = null
+    private var light: Sensor? = null
 
-    private var fontColor: View? = null
     private var value: TextView? = null
 
     // This property is only valid between onCreateView and
@@ -40,22 +39,20 @@ class ProximityFragment : Fragment(), SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        proximityViewModel =
-            ViewModelProvider(this).get(ProximityViewModel::class.java)
+        luminosityViewModel =
+            ViewModelProvider(this).get(LuminosityViewModel::class.java)
 
-        _binding = FragmentProximityBinding.inflate(inflater, container, false)
+        _binding = FragmentLuminosityBinding.inflate(inflater, container, false)
         initializeViews()
 
         sensorManager = this.activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensorManager?.let { sensorManager ->
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
-                proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+                light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
 
             } else {
-                Toast.makeText(context, "PROXIMITY SENSOR NOT AVAILABLE", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "LIGHT SENSOR NOT AVAILABLE", Toast.LENGTH_LONG).show()
             }
-
-
         }
 
         //initialize vibration
@@ -69,29 +66,17 @@ class ProximityFragment : Fragment(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        val distance = event.values[0]
-        val rangeMax = proximity!!.maximumRange
-
-        println(distance)
-
-        value?.text = "Distance: ${distance} | Range maximum: ${rangeMax}"
-
-        if (distance < rangeMax) {
-            // is close
-            fontColor?.setBackgroundColor(Color.RED)
-        } else {
-            // is far
-            fontColor?.setBackgroundColor(Color.GREEN)
-        }
+        val luminosity = event.values[0];
+        value?.text = luminosity.toString()
     }
 
     override fun onResume() {
         // Register a listener for the sensor.
         super.onResume()
 
-        proximity?.also { proximity ->
-            // sensorManager?.registerListener(this, proximity, SensorManager.SENSOR_DELAY_NORMAL)
-            sensorManager?.registerListener(this, proximity, 1000000)
+        light?.also { light ->
+            // sensorManager?.registerListener(this, light, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager?.registerListener(this, light, 1000000)
         }
     }
 
@@ -102,7 +87,6 @@ class ProximityFragment : Fragment(), SensorEventListener {
     }
 
     private fun initializeViews() {
-        fontColor = _binding?.root?.findViewById(R.id.font_color) as View
-        value = _binding?.root?.findViewById(R.id.proximity_value) as TextView
+        value = _binding?.root?.findViewById(R.id.luminosity_value) as TextView
     }
 }

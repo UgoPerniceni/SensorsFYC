@@ -3,4 +3,5 @@
     <string name="title_accelerometer">Accelerometer</string>
     <string name="title_proximity">Proximity</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_luminosity">Luminosity</string>
 </resources>

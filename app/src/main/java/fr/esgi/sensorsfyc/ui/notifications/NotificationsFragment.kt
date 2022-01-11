@@ -6,11 +6,13 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -62,7 +64,7 @@ class NotificationsFragment : Fragment(), SensorEventListener {
                 accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
                 magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
             } else {
-                // Proximity error
+                Toast.makeText(context, "ACCELEROMETER OR MAGNETOMETER SENSOR NOT AVAILABLE", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -95,6 +97,8 @@ class NotificationsFragment : Fragment(), SensorEventListener {
             gravity = event.values
         if(event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD)
             geomagnetic = event.values
+
+        Sensor.TYPE_STEP_COUNTER
 
         if(geomagnetic != null && geomagnetic?.isNotEmpty() == true && gravity != null && gravity?.isNotEmpty() == true) {
 
