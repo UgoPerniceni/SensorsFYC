@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.view.LayoutInflater
@@ -16,9 +17,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.esgi.sensorsfyc.R
 import fr.esgi.sensorsfyc.databinding.FragmentAccelerometerBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
+import java.time.LocalDateTime
 import kotlin.math.abs
 
 class AccelerometerFragment : Fragment(), SensorEventListener {
+
+    val httpClient: OkHttpClient = OkHttpClient()
 
     private lateinit var accelerometerViewModel: AccelerometerViewModel
     private var _binding: FragmentAccelerometerBinding? = null
@@ -123,6 +141,9 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         // display the max x,y,z accelerometer values
         displayMaxValues()
 
+        if(deltaX != 0f && deltaY != 0f)
+            sendPostRequest(deltaX, deltaY, deltaZ)
+
         // get the change of the x,y,z values of the accelerometer
 
         // get the change of the x,y,z values of the accelerometer
@@ -173,4 +194,48 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
             maxZ?.text = deltaZMax.toString()
         }
     }
+
+    private fun sendPostRequest(xValue: Number, yValue: Number, zValue: Number) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val localDateTime: LocalDateTime = LocalDateTime.now();
+            val body =
+                    "[\n" +
+                    "    {\n" +
+                    "        \"localDateTime\": \"$localDateTime\",\n" +
+                    "        \"measurementName\": \"acc-x\",\n" +
+                    "        \"unit\": \"m.s\",\n" +
+                    "        \"value\": $xValue\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "        \"localDateTime\": \"$localDateTime\",\n" +
+                    "        \"measurementName\": \"acc-y\",\n" +
+                    "        \"unit\": \"m.s\",\n" +
+                    "        \"value\": $yValue\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "        \"localDateTime\": \"$localDateTime\",\n" +
+                    "        \"measurementName\": \"acc-z\",\n" +
+                    "        \"unit\": \"m.s\",\n" +
+                    "        \"value\": $zValue\n" +
+                    "    }\n" +
+                    "]"
+
+            val request = Request.Builder()
+                .header("Content-Type", "application/json")
+                .url("https://sleepy-refuge-95334.herokuapp.com/api/v1/elastic/send/samples")
+                .post(body.toRequestBody())
+                .build()
+
+            httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Unexpected code $response")
+                }
+
+                for ((name, value) in response.headers) {
+                    println("$name: $value")
+                }
+
+                println(response.body!!.string())
+            }
+        }}
 }
