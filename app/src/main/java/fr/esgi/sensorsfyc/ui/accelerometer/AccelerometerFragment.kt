@@ -7,10 +7,10 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Vibrator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -64,6 +64,8 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
 
     var v: Vibrator? = null
 
+    private var isSendingData: Boolean = false
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -100,19 +102,38 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val textSendingState: TextView = view.findViewById(R.id.sending_state)
+        val button: Button = view.findViewById(R.id.button_send)
+
+        textSendingState.text = "Not sending."
+        button.text = "Start sending data"
+        button.setOnClickListener {
+            if (isSendingData) {
+                isSendingData = false
+                textSendingState.text = "Not sending."
+                button.text = "Start sending data"
+            } else {
+                isSendingData = true
+                textSendingState.text = "Sending."
+                button.text = "Stop sending data"
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-
     private fun initializeViews() {
         currentX = _binding?.root?.findViewById<View>(R.id.currentX) as TextView
         currentY = _binding?.root?.findViewById<View>(R.id.currentY) as TextView
         currentZ = _binding?.root?.findViewById<View>(R.id.currentZ) as TextView
-        maxX = _binding?.root?.findViewById<View>(R.id.maxX) as TextView
-        maxY = _binding?.root?.findViewById<View>(R.id.maxY) as TextView
-        maxZ = _binding?.root?.findViewById<View>(R.id.maxZ) as TextView
+//        maxX = _binding?.root?.findViewById<View>(R.id.maxX) as TextView
+//        maxY = _binding?.root?.findViewById<View>(R.id.maxY) as TextView
+//        maxZ = _binding?.root?.findViewById<View>(R.id.maxZ) as TextView
     }
 
     //onResume() register the accelerometer for listening the events
@@ -139,18 +160,19 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
             val xValue = event.values[0]
             val yValue = event.values[1]
             val zValue = event.values[2]
+            if (isSendingData) {
+                val stringLocalDateTime: String = LocalDateTime.now().minusHours(1).toString()
+                val amplitude = getAmplitude(xValue = xValue, yValue = yValue, zValue = zValue)
 
-            val stringLocalDateTime: String = LocalDateTime.now().minusHours(1).toString()
-            val amplitude = getAmplitude(xValue = xValue, yValue = yValue, zValue = zValue)
+                val list = mutableListOf<StatisticalSample>()
 
-            val list = mutableListOf<StatisticalSample>()
+                list.add(StatisticalSample(stringLocalDateTime, "acc-x", "m.s", xValue))
+                list.add(StatisticalSample(stringLocalDateTime, "acc-y", "m.s", yValue))
+                list.add(StatisticalSample(stringLocalDateTime, "acc-z", "m.s", zValue))
+                list.add(StatisticalSample(stringLocalDateTime, "acc-amplitude", "m.s", amplitude))
 
-            list.add(StatisticalSample(stringLocalDateTime, "acc-x", "m.s", xValue))
-            list.add(StatisticalSample(stringLocalDateTime, "acc-y", "m.s", yValue))
-            list.add(StatisticalSample(stringLocalDateTime, "acc-z", "m.s", zValue))
-            list.add(StatisticalSample(stringLocalDateTime, "acc-amplitude", "m.s", amplitude))
-
-            sendListOfStatisticalSampleRequest(listOfStatisticalSample = list)
+                sendListOfStatisticalSampleRequest(listOfStatisticalSample = list)
+            }
 
             deltaX = abs(lastX - xValue)
             deltaY = abs(lastY - yValue)
