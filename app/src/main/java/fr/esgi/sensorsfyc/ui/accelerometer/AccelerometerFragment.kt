@@ -5,9 +5,9 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,24 +15,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import fr.esgi.sensorsfyc.R
 import fr.esgi.sensorsfyc.databinding.FragmentAccelerometerBinding
+import fr.esgi.sensorsfyc.domain.StatisticalSample
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLEncoder
 import java.time.LocalDateTime
 import kotlin.math.abs
+import kotlin.math.pow
 
 class AccelerometerFragment : Fragment(), SensorEventListener {
 
@@ -135,23 +131,31 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         // clean current values
         displayCleanValues()
         // display the current x,y,z accelerometer values
-        // display the current x,y,z accelerometer values
         displayCurrentValues()
-        // display the max x,y,z accelerometer values
         // display the max x,y,z accelerometer values
         displayMaxValues()
 
-        if(deltaX != 0f && deltaY != 0f)
-            sendPostRequest(deltaX, deltaY, deltaZ)
+        if (event != null) {
+            val xValue = event.values[0]
+            val yValue = event.values[1]
+            val zValue = event.values[2]
 
-        // get the change of the x,y,z values of the accelerometer
+            val stringLocalDateTime: String = LocalDateTime.now().minusHours(1).toString()
+            val amplitude = getAmplitude(xValue = xValue, yValue = yValue, zValue = zValue)
 
-        // get the change of the x,y,z values of the accelerometer
-        deltaX = abs(lastX - event!!.values[0])
-        deltaY = abs(lastY - event.values[1])
-        deltaZ = abs(lastZ - event.values[2])
+            val list = mutableListOf<StatisticalSample>()
 
-        // if the change is below 2, it is just plain noise
+            list.add(StatisticalSample(stringLocalDateTime, "acc-x", "m.s", xValue))
+            list.add(StatisticalSample(stringLocalDateTime, "acc-y", "m.s", yValue))
+            list.add(StatisticalSample(stringLocalDateTime, "acc-z", "m.s", zValue))
+            list.add(StatisticalSample(stringLocalDateTime, "acc-amplitude", "m.s", amplitude))
+
+            sendListOfStatisticalSampleRequest(listOfStatisticalSample = list)
+
+            deltaX = abs(lastX - xValue)
+            deltaY = abs(lastY - yValue)
+            deltaZ = abs(lastZ - zValue)
+        }
 
         // if the change is below 2, it is just plain noise
         if (deltaX < 2) deltaX = 0f
@@ -195,47 +199,24 @@ class AccelerometerFragment : Fragment(), SensorEventListener {
         }
     }
 
-    private fun sendPostRequest(xValue: Number, yValue: Number, zValue: Number) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val localDateTime: LocalDateTime = LocalDateTime.now();
-            val body =
-                    "[\n" +
-                    "    {\n" +
-                    "        \"localDateTime\": \"$localDateTime\",\n" +
-                    "        \"measurementName\": \"acc-x\",\n" +
-                    "        \"unit\": \"m.s\",\n" +
-                    "        \"value\": $xValue\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "        \"localDateTime\": \"$localDateTime\",\n" +
-                    "        \"measurementName\": \"acc-y\",\n" +
-                    "        \"unit\": \"m.s\",\n" +
-                    "        \"value\": $yValue\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "        \"localDateTime\": \"$localDateTime\",\n" +
-                    "        \"measurementName\": \"acc-z\",\n" +
-                    "        \"unit\": \"m.s\",\n" +
-                    "        \"value\": $zValue\n" +
-                    "    }\n" +
-                    "]"
+    private fun getAmplitude(xValue: Number, yValue: Number, zValue: Number): Double {
+        return Math.sqrt(xValue.toDouble().pow(2) + yValue.toDouble().pow(2) + zValue.toDouble().pow(2))
+    }
 
+    private fun sendListOfStatisticalSampleRequest(listOfStatisticalSample: List<StatisticalSample>) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val jsonString: String = Gson().toJson(listOfStatisticalSample)
             val request = Request.Builder()
                 .header("Content-Type", "application/json")
                 .url("https://sleepy-refuge-95334.herokuapp.com/api/v1/elastic/send/samples")
-                .post(body.toRequestBody())
+                .post(jsonString.toRequestBody())
                 .build()
 
             httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
-                    throw IOException("Unexpected code $response")
+                    throw IOException("Unexpected code $response, \n ${response.body?.string()}")
                 }
-
-                for ((name, value) in response.headers) {
-                    println("$name: $value")
-                }
-
-                println(response.body!!.string())
             }
-        }}
+        }
+    }
 }
